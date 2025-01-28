@@ -1,91 +1,112 @@
-# README - Détection des visages et des mains
+# README - Détection des Visages avec Dlib et Caffe
 
 ## Fonctionnalités
-1. **Détection des visages** : Utilise un modèle DNN (Deep Neural Network) pré-entraîné d'OpenCV.
-2. **Détection des mains** : Utilise Mediapipe pour détecter les mains et afficher les connexions entre leurs points clés.
-3. **Points clés du visage (68 landmarks)** : Utilise Dlib pour détecter les points clés détaillés des visages.
-4. **Visualisation en temps réel** : Affiche les résultats des détections dans une fenêtre vidéo.
+1. **Détection des visages avec Dlib** : Utilise le modèle landmarks68 pour détecter les 68 points clés du visage.
+2. **Détection des visages avec Caffe** : Utilise un modèle DNN (Deep Neural Network) pré-entraîné d'OpenCV.
+
 
 ---
 
-## Structure du projet
-- **Code principal** : `main.py`
-    - Contient les fonctions pour la détection des visages et des mains ainsi que le traitement en temps réel via une webcam.
-- **Code de test avec Dlib** : `test_dlib.py`
-    - Détecte les visages et affiche les 68 points clés du visage à l'aide de Dlib.
-- **Modèles nécessaires** :
-    - `models/deploy.prototxt`
-    - `models/res10_300x300_ssd_iter_140000_fp16.caffemodel`
-    - `models/shape_predictor_68_face_landmarks.dat`
+## Structure du Projet
+
+### Scripts principaux
+- **`image_comparaison.py`** : 
+   - Applique les modèles **Dlib** et **Caffe** sur toutes les images d'un dossier.
+   - **Note** : Vous devez modifier les chemins (path) des images et des modèles dans le script avant de l'exécuter.
+
+- **`webcam.py`** : 
+   - Applique les modèles **Dlib** et **Caffe** au flux vidéo de la webcam en temps réel.
+
+### Scripts individuels par modèle
+- **`caffe.py`** : 
+   - Applique le modèle **Caffe** uniquement sur le flux vidéo de la webcam.
+- **`dlib.py`** : 
+   - Applique le modèle **Dlib** uniquement sur le flux vidéo de la webcam.
+
+### Dossier des outils intermédiaires
+- **`code_modification_images/`** :
+   - Contient tous les scripts utilisés pour modifier les images, notamment :
+     - Ajouter du bruit.
+     - Appliquer des filtres de couleur.
+     - Modifier la luminosité ou le contraste.
 
 ---
 
 ## Prérequis
-1. **Logiciels** :
-   - Python 3.10
-2. **Bibliothèques Python** :
-   - OpenCV
-   - Mediapipe
-   - NumPy
-   - Dlib
-3. **Matériel** :
-   - Une webcam fonctionnelle
+
+### Logiciels
+- **Python 3.10**
+
+### Bibliothèques Python
+- OpenCV
+- Mediapipe (facultatif, si installé par erreur, il n'est pas utilisé ici)
+- NumPy
+- Dlib
+- Matplotlib (si vous souhaitez afficher les images modifiées)
+
+### Modèles nécessaires
+- **Dlib** :
+  - `models/shape_predictor_68_face_landmarks.dat`
+- **Caffe** :
+  - `models/deploy.prototxt`
+  - `models/res10_300x300_ssd_iter_140000_fp16.caffemodel`
 
 ---
 
 ## Installation
+
 1. **Cloner le dépôt ou copier les fichiers nécessaires.**
 2. Installer les dépendances Python avec la commande :
    ```bash
-   pip install opencv-python mediapipe numpy matplotlib dlib
+   pip install opencv-python numpy dlib matplotlib
    ```
-3. Vérifier que les fichiers modèles sont présents dans le dossier `models` :
-   - `.prototxt` et `.caffemodel` pour OpenCV.
-   - `shape_predictor_68_face_landmarks.dat` pour Dlib.
+3. Vérifier que les fichiers modèles sont présents dans le dossier `models`.
 
 ---
 
 ## Utilisation
 
-### Script principal
-1. Exécuter le script principal :
+### Script pour le traitement par lot
+1. Modifier les chemins d'accès dans le fichier `image_comparaison.py` pour indiquer le dossier contenant les images à analyser.
+2. Exécuter le script :
    ```bash
-   python main.py
+   python image_comparaison.py
    ```
-2. Une fenêtre s'ouvrira affichant la capture de la webcam avec les détections des visages et des mains.
-3. **Contrôles** :
-   - Appuyer sur `ESC` pour quitter le programme.
 
-### Script de test avec Dlib
-1. Exécuter le script de test :
+### Script pour la webcam
+1. Exécuter le script `webcam.py` :
    ```bash
-   python test_dlib.py
+   python webcam.py
    ```
-2. Une fenêtre s'ouvrira affichant la capture de la webcam avec les détections des visages (rectangles bleus) et les 68 points clés du visage (cercles verts).
-3. **Contrôles** :
-   - Appuyer sur `q` pour quitter le programme.
+
+### Scripts individuels par modèle
+- Pour utiliser uniquement **Dlib** :
+   ```bash
+   python dlib.py
+   ```
+- Pour utiliser uniquement **Caffe** :
+   ```bash
+   python caffe.py
+   ```
 
 ---
 
 ## Résultats attendus
 
-### Script principal
-- Détection en temps réel des visages avec des rectangles verts.
-- Détection des mains avec des cercles sur les points clés et des connexions entre les articulations.
+### `image_comparaison.py`
+- Les résultats des détections (Dlib et Caffe) sont affichés et sauvegardés pour toutes les images d'un dossier.
 
-### Script de test avec Dlib
-- Détection des visages avec des rectangles bleus.
-- Affichage des 68 points clés détaillés du visage (yeux, nez, bouche, contours).
+### `webcam.py`, `caffe.py`, et `dlib.py`
+- Détection en temps réel des visages sur le flux vidéo de la webcam :
+  - **Caffe** : Affiche des rectangles verts autour des visages détectés.
+  - **Dlib** : Affiche des rectangles bleus et les 68 points clés du visage.
 
 ---
 
 ## Exemple de sortie
 
-### Script principal
-![Exemple de détection OpenCV et Mediapipe](images/exemple_opencv_mediapipe.png)
-
-### Script de test avec Dlib
-![Exemple de détection avec Dlib](images/exemple_dlib.png)
+### Résultat de la détection sur une image
+![Exemple de détection](images/exemple_detection.png)
 
 ---
 
